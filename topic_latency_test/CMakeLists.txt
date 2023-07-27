@@ -71,7 +71,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   sensor_msgs#   std_msgs
+#   sensor_msgs
+#   std_msgs
 # )
 
 ################################################
@@ -104,9 +105,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES topic_latency_test
-#  CATKIN_DEPENDS roscpp rospy sensor_msgs std_msgs
+  INCLUDE_DIRS include
+  LIBRARIES topic_latency_test
+  CATKIN_DEPENDS roscpp rospy sensor_msgs std_msgs
 #  DEPENDS system_lib
 )
 
@@ -150,6 +151,10 @@ include_directories(
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+
+add_executable(latency_test src/latency_test.cpp)
+target_link_libraries(latency_test ${catkin_LIBRARIES})
+# add_dependencies(latency_test topic_latency_test_generate_messages_cpp)
 
 #############
 ## Install ##
