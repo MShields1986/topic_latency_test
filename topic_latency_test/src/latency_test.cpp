@@ -1,9 +1,10 @@
 
 #include "ros/ros.h"
-#include "std_msgs/Header.h"
 #include "sensor_msgs/LaserScan.h"
+// #include "nav_msgs/Odometry.h"
 
 void topicCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
+// void topicCallback(const nav_msgs::Odometry::ConstPtr& msg)
 {
   ros::Time now = ros::Time::now();
   ros::Time then = (*msg).header.stamp;
@@ -18,7 +19,9 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "listener");
   ros::NodeHandle n;
 
-  ros::Subscriber sub = n.subscribe("/scan", 10, topicCallback);
+  ros::Subscriber sub = n.subscribe("/scan_front", 10, topicCallback);
+  // ros::Subscriber sub = n.subscribe("/scan_rear", 10, topicCallback);
+  // ros::Subscriber sub = n.subscribe("/odom", 10, topicCallback);
 
   ros::spin();
 
