@@ -30,7 +30,7 @@ int main(int argc, char **argv)
   // ros::Subscriber sub = n.subscribe("/scan_rear", 10, topicCallback);
   // ros::Subscriber sub = n.subscribe("/odom", 10, topicCallback);
 
-  LogFile << "Packet Created, Packet Received, dt (sec)" << endl;
+  LogFile << "Packet Created, Packet Received, Latency (sec)" << endl;
 
   ros::spin();
 
