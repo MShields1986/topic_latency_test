@@ -128,9 +128,15 @@ histogram(data['Packet Transit dt (sec)'], -0.1, 0.1, 0.001, 0.01)
 scatter(data['Packet Created'], data['Latency (sec)'])
 scatter(data['Packet Created'], data['Packet Created dt (sec)'])
 scatter(data['Packet Created'], data['Packet Received dt (sec)'])
-scatter(data['Packet Created'], data['Packet Transit dt (sec)'])
 
-line(data['Packet Created'], data['Packet Transit dt (sec)'])
+scatter(data['Packet Created'], data['Packet Transit dt (sec)'])
+# scatter(data['Packet Created'][100:300], data['Packet Transit dt (sec)'][100:300])
+
+# line(data['Packet Created'], data['Latency (sec)'])
+line(data['Packet Created'][100:300], data['Latency (sec)'][100:300])
+
+# line(data['Packet Created'], data['Packet Transit dt (sec)'])
+line(data['Packet Created'][100:300], data['Packet Transit dt (sec)'][100:300])
 
 scatter(data['Latency (sec)'], data['Packet Created dt (sec)'])
 scatter(data['Latency (sec)'], data['Packet Received dt (sec)'])
