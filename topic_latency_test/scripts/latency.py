@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 
+import rospkg
 import numpy as np
 import pandas as pd
-
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 ###############################################################################
 # Plotting Styles
@@ -104,12 +103,13 @@ def line(xdata, ydata):
 ###############################################################################
 
 # Parsing
-path = "/home/matthew/Desktop/PhD/data/"
+package_path = rospkg.RosPack().get_path('topic_latency_test')
+path = f"{package_path}/data/"
 file_name = "odom.txt"
 file_name = "scan_front.txt"
 file_name = "scan_rear.txt"
 
-data = pd.read_csv(f"{path}{file_name}", header=0, sep=", ")
+data = pd.read_csv(f"{path}{file_name}", header=0, sep=", ", engine='python')
 
 df_length = len(data['Packet Created'])
 
