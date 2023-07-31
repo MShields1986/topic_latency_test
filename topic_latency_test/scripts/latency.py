@@ -43,9 +43,9 @@ def histogram(data, xmin, xmax, binsize, xtick):
     plt.xlabel(data.name)
     plt.ylabel("Observations")
 
-    # plt.savefig(path + file.split(".")[0] + "/" + name + " Histogram.png", dpi=dpi)
-    plt.show()
-    # plt.close()
+    plt.savefig(path + file.split(".")[0] + " - " + name + " Histogram.png", dpi=dpi)
+    # plt.show()
+    plt.close()
 
 def scatter(xdata, ydata):
     xname = xdata.name.split("(")[0].rstrip()
@@ -63,14 +63,12 @@ def scatter(xdata, ydata):
     plt.xlim((xdata.min(), xdata.max()))
     plt.ylim((ydata.min(), ydata.max()))
 
-    """
     plt.savefig(
-        path + file.split(".")[0] + "/" + xname + " vs " + yname + " Scatter Plot.png",
+        path + file.split(".")[0] + " - " + xname + " vs " + yname + " Scatter Plot.png",
         dpi=dpi,
     )
-    """
-    plt.show()
-    #plt.close()
+    # plt.show()
+    plt.close()
 
 def line(xdata, ydata):
     xname = xdata.name.split("(")[0].rstrip()
@@ -89,14 +87,12 @@ def line(xdata, ydata):
     plt.xlim((xdata.min(), xdata.max()))
     plt.ylim((ydata.min(), ydata.max()))
 
-    """
     plt.savefig(
-        path + file.split(".")[0] + "/" + xname + " vs " + yname + " Line Plot.png",
+        path + file.split(".")[0] + " - " + xname + " vs " + yname + " Line Plot.png",
         dpi=dpi,
     )
-    """
-    plt.show()
-    # plt.close()
+    # plt.show()
+    plt.close()
 
 ###############################################################################
 # Processing
@@ -104,12 +100,14 @@ def line(xdata, ydata):
 
 # Parsing
 package_path = rospkg.RosPack().get_path('topic_latency_test')
-path = f"{package_path}/data/"
-file_name = "odom.txt"
-file_name = "scan_front.txt"
-file_name = "scan_rear.txt"
 
-data = pd.read_csv(f"{path}{file_name}", header=0, sep=", ", engine='python')
+path = f"{package_path}/data/"
+
+file = "odom.txt"
+# file = "scan_front.txt"
+# file = "scan_rear.txt"
+
+data = pd.read_csv(f"{path}{file}", header=0, sep=", ", engine='python')
 
 df_length = len(data['Packet Created'])
 
