@@ -29,7 +29,7 @@ def histogram(data, xmin, xmax, binsize, xtick):
         data, bins=np.arange(xmin, xmax, step=binsize), alpha=alpha, color="red"
     )
 
-    plt.suptitle(name + " Histogram")
+    plt.suptitle(f"/{file.split('.')[0]} - {name} Histogram")
     plt.title(
         "1σ = "
         + str(round(data.std(), 5))
@@ -57,7 +57,7 @@ def scatter(xdata, ydata):
 
     plt.scatter(xdata, ydata, c="red", marker=".", alpha=alpha, s=pointsize)
 
-    plt.title(xname + " vs. " + yname + " Scatter Plot")
+    plt.title(f"/{file.split('.')[0]} - {xname} vs. {yname} Scatter Plot")
     plt.xlabel(xdata.name)
     plt.ylabel(ydata.name)
     plt.xlim((xdata.min(), xdata.max()))
@@ -81,7 +81,7 @@ def line(xdata, ydata):
     plt.plot(xdata, ydata, c="red", alpha=alpha, linewidth=linewidth, linestyle="-")
     # plt.plot(xdata, ydata, c="red", alpha=alpha, linewidth=linewidth, linestyle="--")
 
-    plt.title(xname + " vs. " + yname + " Line Plot")
+    plt.title(f"/{file.split('.')[0]} - {xname} vs. {yname} Line Plot")
     plt.xlabel(xdata.name)
     plt.ylabel(ydata.name)
     plt.xlim((xdata.min(), xdata.max()))
