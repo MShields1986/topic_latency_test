@@ -12,7 +12,7 @@ std::string path(ros::package::getPath("topic_latency_test"));
 ofstream LogFile(path + "/data/scan_internal.txt");
 // ofstream LogFile(path + "/data/scan_front.txt");
 // ofstream LogFile(path + "/data/scan_rear.txt");
-// ofstream LogFile(path + "/data/scan_odom.txt");
+// ofstream LogFile(path + "/data/odom.txt");
 
 void topicCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 // void topicCallback(const nav_msgs::Odometry::ConstPtr& msg)
