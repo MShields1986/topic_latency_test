@@ -9,7 +9,7 @@
 using namespace std;
 
 std::string path(ros::package::getPath("topic_latency_test"));
-ofstream LogFile(path + "/data/log.txt");
+ofstream LogFile(path + "/data/scan_internal.txt");
 
 void topicCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 // void topicCallback(const nav_msgs::Odometry::ConstPtr& msg)
