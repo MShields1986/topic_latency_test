@@ -103,7 +103,7 @@ package_path = rospkg.RosPack().get_path('topic_latency_test')
 
 path = f"{package_path}/data/"
 
-file = "odom.txt"
+file = "scan_internal.txt"
 # file = "scan_front.txt"
 # file = "scan_rear.txt"
 
