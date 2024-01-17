@@ -1,11 +1,11 @@
 #include <iostream>
 #include <fstream>
 
-#include "ros/ros.h"
+#include <ros/ros.h>
 #include <ros/package.h>
-#include "sensor_msgs/LaserScan.h"
-#include "nav_msgs/Odometry.h"
-#include "iiwa_msgs/CartesianPose.h"
+#include <sensor_msgs/LaserScan.h>
+#include <nav_msgs/Odometry.h>
+#include <iiwa_msgs/CartesianPose.h>
 
 using namespace std;
 
@@ -15,6 +15,9 @@ std::vector<ros::Time> thens{};
 std::vector<ros::Time> nows{};
 std::vector<ros::Duration> dts{};
 
+ros::Time now;
+ros::Time then;
+ros::Duration dt;
 
 // ofstream LogFile(path + "/data/scan_internal.txt");
 // ofstream LogFile(path + "/data/scan_front.txt");
@@ -27,13 +30,12 @@ ofstream LogFile(path + "/data/iiwa_cartesian_pose.txt");
 // void topicCallback(const nav_msgs::Odometry::ConstPtr& msg)
 void topicCallback(const iiwa_msgs::CartesianPose::ConstPtr& msg)
 {
-  ros::Time now = ros::Time::now();
-  // ros::Time then = (*msg).header.stamp;
-  ros::Time then = (*msg).poseStamped.header.stamp;
+  now = ros::Time::now();
+  // then = (*msg).header.stamp;
+  then = (*msg).poseStamped.header.stamp;
+  dt = now - then;
 
-  ros::Duration dt = now - then;
-
-  ROS_INFO_STREAM("Latency (sec): " << dt.toSec() << endl);
+  ROS_INFO_STREAM("Latency (sec): " << dt.toSec());
 
   thens.push_back(then);
   nows.push_back(now);
@@ -60,12 +62,12 @@ int main(int argc, char **argv)
   while (ros::ok())
   {
     ROS_INFO_STREAM("Topic latency monitor running...");
-    // ROS_INFO_THROTTLE(10, "Main Loop Latency (sec): " << std::to_string(dts.back().toSec()) << endl);
-    // ROS_INFO_STREAM("Main Loop Latency (sec): " << dts.back() << endl);
+    // ROS_INFO_THROTTLE(10, "Main Loop Latency (sec): " << std::to_string(dts.back().toSec()));
+    // ROS_INFO_STREAM("Main Loop Latency (sec): " << dts.back());
     // ros::spinOnce();
     // rate.sleep();
 
-    // Order of magnitude faster to just do this rather than using ros::Rate
+    // This is an order of magnitude faster to just do this rather than using ros::Rate as above
     ros::spin();
   }
 
