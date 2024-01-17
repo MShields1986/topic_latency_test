@@ -13,8 +13,8 @@ import matplotlib.pyplot as plt
 pointsize = 0.8
 linewidth = 1
 alpha = 0.7
-figw = 7 * 1.2 * 1.5
-figh = 4 * 1.2
+figw = 6 #7 * 1.2 * 1.5
+figh = 4 #4 * 1.2
 dpi = 400
 
 def histogram(data, xmin, xmax, binsize, xtick):
@@ -32,11 +32,11 @@ def histogram(data, xmin, xmax, binsize, xtick):
     plt.suptitle(f"/{file.split('.')[0]} - {name} Histogram")
     plt.title(
         "1σ = "
-        + str(round(data.std(), 5))
+        + str(round(data.std(), 3))
         + " | mean = "
-        + str(round(data.mean(), 5))
+        + str(round(data.mean(), 3))
         + " | median = "
-        + str(round(data.median(), 5))
+        + str(round(data.median(), 3))
         + " | n = "
         + str(len(data))
     )
@@ -106,6 +106,7 @@ path = f"{package_path}/data/"
 file = "scan_internal.txt"
 # file = "scan_front.txt"
 # file = "scan_rear.txt"
+# file = "odom.txt"
 
 data = pd.read_csv(f"{path}{file}", header=0, sep=", ", engine='python')
 
@@ -120,7 +121,7 @@ data['Packet Received dt (sec)'] = data['Packet Received dt (sec)'].shift(1)
 data['Packet Transit dt (sec)'] = data['Packet Created dt (sec)'] - data['Packet Received dt (sec)']
 
 # Plotting
-histogram(data['Latency (sec)'], 0, 0.2, 0.001, 0.01)
+histogram(data['Latency (sec)'], 0, 0.2, 0.001, 0.02)
 histogram(data['Packet Created dt (sec)'], 0, 0.1, 0.001, 0.01)
 histogram(data['Packet Received dt (sec)'], 0, 0.1, 0.001, 0.01)
 histogram(data['Packet Transit dt (sec)'], -0.1, 0.1, 0.001, 0.01)
@@ -133,10 +134,10 @@ scatter(data['Packet Created'], data['Packet Transit dt (sec)'])
 # scatter(data['Packet Created'][100:300], data['Packet Transit dt (sec)'][100:300])
 
 # line(data['Packet Created'], data['Latency (sec)'])
-line(data['Packet Created'][100:300], data['Latency (sec)'][100:300])
+# line(data['Packet Created'][100:300], data['Latency (sec)'][100:300])
 
 # line(data['Packet Created'], data['Packet Transit dt (sec)'])
-line(data['Packet Created'][100:300], data['Packet Transit dt (sec)'][100:300])
+# line(data['Packet Created'][100:300], data['Packet Transit dt (sec)'][100:300])
 
 scatter(data['Latency (sec)'], data['Packet Created dt (sec)'])
 scatter(data['Latency (sec)'], data['Packet Received dt (sec)'])
