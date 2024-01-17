@@ -155,9 +155,17 @@ include_directories(
 # )
 
 add_executable(latency_test src/latency_test.cpp)
-add_executable(publisher src/publisher.cpp)
 target_link_libraries(latency_test ${catkin_LIBRARIES})
+
+add_executable(publisher src/publisher.cpp)
 target_link_libraries(publisher ${catkin_LIBRARIES})
+
+add_executable(kmr_command_latency_test src/kmr_command_latency_test.cpp)
+target_link_libraries(kmr_command_latency_test ${catkin_LIBRARIES})
+
+add_executable(iiwa_command_latency_test src/iiwa_command_latency_test.cpp)
+target_link_libraries(iiwa_command_latency_test ${catkin_LIBRARIES})
+
 # add_dependencies(latency_test topic_latency_test_generate_messages_cpp)
 
 #############

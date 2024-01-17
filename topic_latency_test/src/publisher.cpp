@@ -20,7 +20,7 @@ int main(int argc, char **argv)
   // ros::Publisher pub = nh.advertise<nav_msgs::Odometry>("/odom", 100);
   ros::Publisher pub = nh.advertise<iiwa_msgs::CartesianPose>("/iiwa/state/CartesianPose", 100);
 
-  ros::Rate loop_rate(10);
+  ros::Rate rate(10);
 
   while (ros::ok())
   {
@@ -33,7 +33,7 @@ int main(int argc, char **argv)
 
     pub.publish(msg);
     ros::spinOnce();
-    loop_rate.sleep();
+    rate.sleep();
   }
   return 0;
 }
