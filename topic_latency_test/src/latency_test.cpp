@@ -31,9 +31,8 @@ ofstream LogFile(path + "/data/iiwa_cartesian_pose.txt");
 void topicCallback(const iiwa_msgs::CartesianPose::ConstPtr& msg)
 {
   now = ros::Time::now();
-  // then = (*msg).header.stamp;
   // then = msg->header.stamp;
-  then = (*msg).poseStamped.header.stamp;
+  then = msg->poseStamped.header.stamp;
   dt = now - then;
 
   ROS_INFO_STREAM("Latency (sec): " << dt.toSec());

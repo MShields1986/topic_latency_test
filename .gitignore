@@ -50,5 +50,6 @@ qtcreator-*
 # Catkin custom files
 CATKIN_IGNORE
 
-# Plots
+# Data and Plots
 *.png
+*.txt
