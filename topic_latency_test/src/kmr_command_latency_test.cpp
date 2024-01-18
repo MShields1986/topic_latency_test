@@ -1,12 +1,14 @@
 #include <iostream>
 #include <fstream>
+#include <chrono>
+#include <thread>
 
 #include <ros/ros.h>
 #include <ros/package.h>
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 
-using namespace std;
+int observation_count = 0;
 
 float vel_lim = 0.1;
 geometry_msgs::Twist msg;
@@ -21,7 +23,7 @@ ros::Time command_send_time;
 ros::Time action_observed_time;
 ros::Duration dt;
 
-ofstream LogFile(path + "/data/kmr_command.txt");
+std::ofstream LogFile(path + "/data/kmr_command.txt");
 
 void recordObservation()
 {
@@ -34,18 +36,24 @@ void recordObservation()
   observes.push_back(action_observed_time);
   dts.push_back(dt);
 
+  observation_count++;
+  ROS_INFO_STREAM("Observation count: " << observation_count);
+
   ROS_INFO_STREAM("Switching velocity direction...");
   vel_lim = vel_lim * -1;
+
+  ROS_INFO_STREAM("Blocking for 2 seconeds");
+  std::this_thread::sleep_for(std::chrono::seconds(2));
 }
 
 
 void topicCallback(const nav_msgs::Odometry::ConstPtr& msg)
 {
-  if (msg->twist.twist.linear.x > 0.0 && vel_lim > 0.0)
+  if (msg->twist.twist.linear.x > 0.01 && vel_lim > 0.0)
   {
     recordObservation();
 
-  } else if (msg->twist.twist.linear.x < 0.0 && vel_lim < 0.0)
+  } else if (msg->twist.twist.linear.x < -0.01 && vel_lim < 0.0)
   {
     recordObservation();
   }
@@ -60,7 +68,7 @@ int main(int argc, char **argv)
 
   ros::init(argc, argv, "kmr_command_latency_tester");
   ros::NodeHandle nh;
-  ros::Rate rate(1);
+  ros::Rate rate(0.5);
 
   ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 100, true);
   ros::Subscriber sub = nh.subscribe("/odom", 10, topicCallback);
@@ -80,11 +88,11 @@ int main(int argc, char **argv)
     rate.sleep();
   }
 
-  LogFile << "Packet Sent, Action Observed, Latency (sec)" << endl;
+  LogFile << "Packet Sent, Action Observed, Latency (sec)" << std::endl;
 
   for (int i = 0; i < sends.size(); i++)
   {
-    LogFile << sends[i] << ", " << observes[i] << ", " << dts[i] << endl;
+    LogFile << sends[i] << ", " << observes[i] << ", " << dts[i] << std::endl;
   }
 
   LogFile.close();
