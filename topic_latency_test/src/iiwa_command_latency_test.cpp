@@ -6,12 +6,21 @@
 #include <ros/ros.h>
 #include <ros/package.h>
 #include <geometry_msgs/TwistStamped.h>
-#include <iiwa_msgs/CartesianVelocity.h>
+// #include <geometry_msgs/Twist.h>
+#include <iiwa_msgs/CartesianPose.h>
 
 int observation_count = 0;
+int observation_goal = 1000;
 
-float vel_lim = 0.1;
+float vel_lim = 100.0; // mm/s
 geometry_msgs::TwistStamped msg;
+//geometry_msgs::Twist msg;
+
+float curr_pos = 0.0;
+float prev_pos = 0.0;
+float curr_vel = 0.0;
+bool topic_latch = false;
+
 
 std::string path(ros::package::getPath("topic_latency_test"));
 
@@ -37,7 +46,7 @@ void recordObservation()
   dts.push_back(dt);
 
   observation_count++;
-  ROS_INFO_STREAM("Observation count: " << observation_count);
+  ROS_INFO_STREAM("Observation: " << observation_count << "/" << observation_goal);
 
   ROS_INFO_STREAM("Switching velocity direction...");
   vel_lim = vel_lim * -1;
@@ -47,40 +56,57 @@ void recordObservation()
 }
 
 
-void topicCallback(const iiwa_msgs::CartesianVelocity::ConstPtr& msg)
+void topicCallback(const iiwa_msgs::CartesianPose::ConstPtr& msg)
 {
-  if (msg->velocity.x > 0.0 && vel_lim > 0.0)
+  curr_pos = msg->poseStamped.pose.position.y;
+  
+  if (topic_latch){
+    curr_vel = (curr_pos - prev_pos) / 0.0025; // ~400Hz m/s
+    ROS_INFO_STREAM("Velocity: " << curr_vel);
+  }
+
+  if (curr_vel > 0.01 && vel_lim > 0.0)
   {
     recordObservation();
 
-  } else if (msg->velocity.x < 0.0 && vel_lim < 0.0)
+  } else if (curr_vel < -0.01 && vel_lim < 0.0)
   {
     recordObservation();
+  }
+
+  prev_pos = curr_pos;
+
+  if (!topic_latch) {
+    topic_latch = true;
   }
 }
 
 
 int main(int argc, char **argv)
 {
-  sends.reserve(10000);
-  observes.reserve(10000);
-  dts.reserve(10000);
+  sends.reserve(observation_goal);
+  observes.reserve(observation_goal);
+  dts.reserve(observation_goal);
 
   ros::init(argc, argv, "iiwa_command_latency_tester");
   ros::NodeHandle nh;
-  ros::Rate rate(1);
+  ros::Rate rate(20);
 
-  ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("/iiwa/command/CartesianVelocity", 100, true);
-  ros::Subscriber sub = nh.subscribe("/iiwa/state/CartesianVelocity", 10, topicCallback);
+  ros::Publisher pub = nh.advertise<geometry_msgs::TwistStamped>("/iiwa/command/CartesianVelocity", 100, true);
+  ros::Subscriber sub = nh.subscribe("/iiwa/state/CartesianPose", 10, topicCallback);
 
   ROS_INFO_STREAM("iiwa latency monitor running...");
 
-  while (ros::ok())
+  while (ros::ok() && observation_count < observation_goal)
   {
     ROS_INFO_STREAM("Publishing " << vel_lim);    
 
     msg.header.stamp = ros::Time::now();
-    msg.twist.linear.x = vel_lim;
+    msg.header.frame_id = "iiwa_link_0";
+    msg.twist.linear.x = 0.0; //vel_lim;
+    msg.twist.linear.y = vel_lim; //0.0;
+    msg.twist.linear.z = 0.0;
+    // msg.linear.x = vel_lim;
 
     command_send_time = ros::Time::now();
 

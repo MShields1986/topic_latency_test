@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   roslib
   sensor_msgs
+  geometry_msgs
   std_msgs
   iiwa_msgs
 )
@@ -109,7 +110,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES topic_latency_test
-  CATKIN_DEPENDS roscpp rospy roslib sensor_msgs std_msgs
+  CATKIN_DEPENDS roscpp rospy roslib sensor_msgs geometry_msgs std_msgs
 #  DEPENDS system_lib
 )
 

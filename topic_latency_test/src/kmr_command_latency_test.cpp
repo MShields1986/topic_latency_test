@@ -8,12 +8,17 @@
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 
+
 int observation_count = 0;
+int observation_goal = 1000;
 
 float vel_lim = 0.1;
-geometry_msgs::Twist msg;
 
 std::string path(ros::package::getPath("topic_latency_test"));
+std::ofstream LogFile(path + "/data/kmr_command.txt");
+
+
+geometry_msgs::Twist msg;
 
 std::vector<ros::Time> sends{};
 std::vector<ros::Time> observes{};
@@ -23,7 +28,6 @@ ros::Time command_send_time;
 ros::Time action_observed_time;
 ros::Duration dt;
 
-std::ofstream LogFile(path + "/data/kmr_command.txt");
 
 void recordObservation()
 {
@@ -37,7 +41,7 @@ void recordObservation()
   dts.push_back(dt);
 
   observation_count++;
-  ROS_INFO_STREAM("Observation count: " << observation_count);
+  ROS_INFO_STREAM("Observation: " << observation_count << "/" << observation_goal);
 
   ROS_INFO_STREAM("Switching velocity direction...");
   vel_lim = vel_lim * -1;
@@ -62,9 +66,9 @@ void topicCallback(const nav_msgs::Odometry::ConstPtr& msg)
 
 int main(int argc, char **argv)
 {
-  sends.reserve(10000);
-  observes.reserve(10000);
-  dts.reserve(10000);
+  sends.reserve(observation_goal);
+  observes.reserve(observation_goal);
+  dts.reserve(observation_goal);
 
   ros::init(argc, argv, "kmr_command_latency_tester");
   ros::NodeHandle nh;
@@ -75,7 +79,7 @@ int main(int argc, char **argv)
 
   ROS_INFO_STREAM("KMR latency monitor running...");
 
-  while (ros::ok())
+  while (ros::ok() && observation_count < observation_goal)
   {
     ROS_INFO_STREAM("Publishing " << vel_lim);    
 
