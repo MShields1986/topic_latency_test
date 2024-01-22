@@ -72,26 +72,31 @@ sequenceDiagram
     participant rob as Robot's Internal Computer
     participant ext as External ROS Computer
 
-    activate ext
-    ext-->>rob: Command Transmission as /cmd_vel
-    deactivate ext
-    activate rob
-    rob-->>mot: Motor Command Transmission
-    deactivate rob
-    activate mot
-    mot-->>scene: Motor Enacts Physical Change
-    deactivate mot
-    activate scene
-    scene-->>sen: Sensor Observes Change
-    deactivate scene
-    activate sen
-    sen-->>rob: Sensor Data Transmission
-    deactivate sen
-    activate rob
-    rob-->>ext: Sensor Data Transmission as /odom
-    deactivate rob
-    activate ext
-    deactivate ext
+    loop
+        Note over ext: Record Send Time
+        activate ext
+        ext-->>rob: Command Transmission as /cmd_vel
+        deactivate ext
+        activate rob
+        rob-->>mot: Motor Command Transmission
+        deactivate rob
+        activate mot
+        mot-->>scene: Motor Enacts Physical Change
+        deactivate mot
+        activate scene
+        scene-->>sen: Sensor Observes Change
+        deactivate scene
+        activate sen
+        sen-->>rob: Sensor Data Transmission
+        deactivate sen
+        activate rob
+        rob-->>ext: Sensor Data Transmission as /odom
+        deactivate rob
+        activate ext
+        deactivate ext
+        Note over ext: Record Receive Time
+        Note over ext: Block for 2 Seconds
+    end
 ```
 
 ## Installation
