@@ -115,10 +115,26 @@ catkin build
 
 ## Usage
 ### Test 1.
+If you'd like to test locally to start with an /odom publisher is included for convenience
+```bash
+rosrun topic_latency_test publisher
+```
 
+Similarly by default the latency test is setup to listen to /odom but can easily be modified and rebuilt for other topics.
+```bash
+rosrun topic_latency_test latency_test
+```
+
+Latency values will be logged to ROS info and recorded along with the associated timestamps in `data/odom.txt`
 
 ### Test 2.
+The initial velocity is set to 0.1 m/s and will feasibly be acted upon for 2-3 seconds before a reverse command is sent. As such I'd advise allowing a metre or so in front and behind your robot before commencing with the test. Alternatively you could raise the robot from the ground but then you wouldn't capture any effects due to inertia within the test.
 
+```bash
+rosrun topic_latency_test command_latency_test
+```
+
+Latency values will be logged to ROS info and recorded along with the associated timestamps in `data/command.txt`
 
 ### Results and Processing
 Logs are recorded in the `data` directory and there are some helper scripts to generate plots provided in the `scripts` directory.
