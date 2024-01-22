@@ -14,7 +14,6 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   geometry_msgs
   std_msgs
-  iiwa_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -161,8 +160,8 @@ target_link_libraries(latency_test ${catkin_LIBRARIES})
 add_executable(publisher src/publisher.cpp)
 target_link_libraries(publisher ${catkin_LIBRARIES})
 
-add_executable(kmr_command_latency_test src/kmr_command_latency_test.cpp)
-target_link_libraries(kmr_command_latency_test ${catkin_LIBRARIES})
+add_executable(command_latency_test src/command_latency_test.cpp)
+target_link_libraries(command_latency_test ${catkin_LIBRARIES})
 
 add_executable(iiwa_command_latency_test src/iiwa_command_latency_test.cpp)
 target_link_libraries(iiwa_command_latency_test ${catkin_LIBRARIES})

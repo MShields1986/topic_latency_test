@@ -15,7 +15,7 @@ int observation_goal = 200;
 float vel_lim = 0.1;
 
 std::string path(ros::package::getPath("topic_latency_test"));
-std::ofstream LogFile(path + "/data/kmr_command.txt");
+std::ofstream LogFile(path + "/data/command.txt");
 
 
 geometry_msgs::Twist msg;
@@ -70,14 +70,14 @@ int main(int argc, char **argv)
   observes.reserve(observation_goal);
   dts.reserve(observation_goal);
 
-  ros::init(argc, argv, "kmr_command_latency_tester");
+  ros::init(argc, argv, "command_latency_tester");
   ros::NodeHandle nh;
   ros::Rate rate(0.5);
 
   ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 100, true);
   ros::Subscriber sub = nh.subscribe("/odom", 10, topicCallback);
 
-  ROS_INFO_STREAM("KMR latency monitor running...");
+  ROS_INFO_STREAM("Command latency monitor running...");
 
   while (ros::ok() && observation_count < observation_goal)
   {

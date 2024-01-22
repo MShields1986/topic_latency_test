@@ -13,8 +13,8 @@ import matplotlib.pyplot as plt
 pointsize = 0.8
 linewidth = 1
 alpha = 0.7
-figw = 6 #7 * 1.2 * 1.5
-figh = 4 #4 * 1.2
+figw = 6
+figh = 4
 dpi = 400
 
 def histogram(data, xmin, xmax, binsize, xtick):
@@ -103,11 +103,9 @@ package_path = rospkg.RosPack().get_path('topic_latency_test')
 
 path = f"{package_path}/data/"
 
-files_wired = ["kmr_command_wired.txt",
-               "iiwa_command_wired.txt"]
+files_wired = ["command.txt"]
 
-files_wifi = ["kmr_command_wifi.txt",
-              "iiwa_command_wifi.txt"]
+files_wifi = ["command.txt"]
 
 
 for file in files_wifi:
@@ -127,28 +125,16 @@ for file in files_wifi:
     data['Transit dt (ms)'] = data['Transit dt (sec)'] * 1000
 
     # Plotting
-    if 'iiwa' in file:
-        histogram(data['Latency (ms)'],
-                  data['Latency (ms)'].min().round(2),
-                  data['Latency (ms)'].max().round(2),
-                  0.001,
-                  0.1)
-        histogram(data['Transit dt (ms)'],
-                  data['Transit dt (ms)'].min().round(1),
-                  data['Transit dt (ms)'].max().round(1),
-                  0.005,
-                  0.1)
-    else:
-        histogram(data['Latency (ms)'],
-                  data['Latency (ms)'].min().round(2),
-                  data['Latency (ms)'].max().round(2),
-                  0.001,
-                  0.01)
-        histogram(data['Transit dt (ms)'],
-                  data['Transit dt (ms)'].min().round(1),
-                  data['Transit dt (ms)'].max().round(1),
-                  0.001,
-                  0.05)
+    histogram(data['Latency (ms)'],
+              data['Latency (ms)'].min().round(2),
+              data['Latency (ms)'].max().round(2),
+              0.001,
+              0.01)
+    histogram(data['Transit dt (ms)'],
+              data['Transit dt (ms)'].min().round(1),
+              data['Transit dt (ms)'].max().round(1),
+              0.001,
+              0.05)
 
     scatter(data['Packet Sent'], data['Latency (ms)'])
     scatter(data['Packet Sent'], data['Transit dt (ms)'])
