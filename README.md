@@ -121,7 +121,7 @@ catkin build
 
 
 ### Results and Processing
-Logs are recorded in the `data` directory and there are some helper scripts to plot the logs provided in the `scripts` directory.
+Logs are recorded in the `data` directory and there are some helper scripts to generate plots provided in the `scripts` directory.
 
 ## Bugs, Issues and Feature Requests
 Please report bugs, issues and request features using the [Issue Tracker](https://github.com/MShields1986/topic_latency_test/issues).
