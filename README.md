@@ -4,8 +4,8 @@ Package to test the reliability and latency of a ROS system in two ways.
 - Test 1. comparing the send and receive times of a message for a given topic
 - Test 2. evaluating the time for a /cmd_vel packet sent to be acted upon and that command then observed in /odom
 
-## Details for Test 1.
-This test 
+### Details for Test 1.
+This test simply records the internal timestamps within the header of a given ROS message and records the local time that the messages were received alongside them. From this we can evaluate the consistency of the output of the data from the source as well as the latency of transmission to our local machine.
 
 This test includes delays due to:
 - clock differences between the computers
@@ -58,11 +58,12 @@ graph TD
     b2==NTP===c2
 ```
 
-## Details for Test 2.
+### Details for Test 2.
 This test tries to give an idea of the time it takes for a command, /cmd_vel, to be acted upon and observed by the robot in the /odom topic. This is useful for evaluating an lower bound for control loop time and the drive system's performance. There are many better ways to achieve real-time performance with ROS, as such this tool is designed for prototyping and research purposes only, whilst trying to have application across a wide range of mobile robots by utilising the common nav_stack topics.
 
-
 An extension and simplification of the diagram above is provided below to show the exgtension for the control loop being evaluated. Note that on this test we do not look at the internal message time stamps, rather we record the sent and received times on the "External ROS Computer" running the node provided in this repository, as such this test is less reliant on clock synchronisation.
+
+We record a send time, send a /cmd_vel message to our downstream move base and motor driver interfaces. We then wait to see a motion occur in the /odom topic reported back with an appropriate sign for the velocity. Once we have received this we record a receive time and compute the delta t, flip the sign of the velocity command for the next loop and pause for 2 seconds before repeating.
 
 ```mermaid
 sequenceDiagram
@@ -75,7 +76,7 @@ sequenceDiagram
     loop
         Note over ext: Record Send Time
         activate ext
-        ext-->>rob: Command Transmission as /cmd_vel
+        ext-->>rob: Send Velocity Command as /cmd_vel
         deactivate ext
         activate rob
         rob-->>mot: Motor Command Transmission
@@ -94,7 +95,9 @@ sequenceDiagram
         deactivate rob
         activate ext
         deactivate ext
-        Note over ext: Record Receive Time
+        Note over ext: Record Receive Time of Message With Appropriately Signed Velocity
+        Note over ext: Compute Loop Time
+        Note over ext: Switch Sign for the Next Velocity Command
         Note over ext: Block for 2 Seconds
     end
 ```
