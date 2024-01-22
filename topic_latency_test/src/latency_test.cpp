@@ -5,7 +5,6 @@
 #include <ros/package.h>
 #include <sensor_msgs/LaserScan.h>
 #include <nav_msgs/Odometry.h>
-#include <iiwa_msgs/CartesianPose.h>
 
 using namespace std;
 
@@ -22,17 +21,14 @@ ros::Duration dt;
 // ofstream LogFile(path + "/data/scan_internal.txt");
 // ofstream LogFile(path + "/data/scan_front.txt");
 // ofstream LogFile(path + "/data/scan_rear.txt");
-// ofstream LogFile(path + "/data/odom.txt");
-ofstream LogFile(path + "/data/iiwa_cartesian_pose.txt");
+ofstream LogFile(path + "/data/odom.txt");
 
 
 // void topicCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
-// void topicCallback(const nav_msgs::Odometry::ConstPtr& msg)
-void topicCallback(const iiwa_msgs::CartesianPose::ConstPtr& msg)
+void topicCallback(const nav_msgs::Odometry::ConstPtr& msg)
 {
   now = ros::Time::now();
-  // then = msg->header.stamp;
-  then = msg->poseStamped.header.stamp;
+  then = msg->header.stamp;
   dt = now - then;
 
   ROS_INFO_STREAM("Latency (sec): " << dt.toSec());
@@ -56,8 +52,7 @@ int main(int argc, char **argv)
   // ros::Subscriber sub = nh.subscribe("/scan", 10, topicCallback);
   // ros::Subscriber sub = nh.subscribe("/scan_front", 10, topicCallback);
   // ros::Subscriber sub = nh.subscribe("/scan_rear", 10, topicCallback);
-  // ros::Subscriber sub = nh.subscribe("/odom", 10, topicCallback);
-  ros::Subscriber sub = nh.subscribe("/iiwa/state/CartesianPose", 10, topicCallback);
+  ros::Subscriber sub = nh.subscribe("/odom", 10, topicCallback);
 
   while (ros::ok())
   {

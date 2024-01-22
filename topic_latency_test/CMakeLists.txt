@@ -163,9 +163,6 @@ target_link_libraries(publisher ${catkin_LIBRARIES})
 add_executable(command_latency_test src/command_latency_test.cpp)
 target_link_libraries(command_latency_test ${catkin_LIBRARIES})
 
-add_executable(iiwa_command_latency_test src/iiwa_command_latency_test.cpp)
-target_link_libraries(iiwa_command_latency_test ${catkin_LIBRARIES})
-
 # add_dependencies(latency_test topic_latency_test_generate_messages_cpp)
 
 #############
