@@ -1,10 +1,10 @@
 # topic_latency_test
 ## Overview
 Package to test the reliability and latency of a ROS system in two ways.
-1. comparing the send and receive times of a message for a given topic
-2. evaluating the time for a /cmd_vel packet sent to be acted upon and that command then observed in /odom
+- Test 1. comparing the send and receive times of a message for a given topic
+- Test 2. evaluating the time for a /cmd_vel packet sent to be acted upon and that command then observed in /odom
 
-## Details for 1.
+## Details for Test 1.
 This test 
 
 This test includes delays due to:
@@ -58,7 +58,7 @@ graph TD
     b2==NTP===c2
 ```
 
-## Details for 2.
+## Details for Test 2.
 This test tries to give an idea of the time it takes for a command, /cmd_vel, to be acted upon and observed by the robot in the /odom topic. This is useful for evaluating an lower bound for control loop time and the drive system's performance. There are many better ways to achieve real-time performance with ROS, as such this tool is designed for prototyping and research purposes only, whilst trying to have application across a wide range of mobile robots by utilising the common nav_stack topics.
 
 
