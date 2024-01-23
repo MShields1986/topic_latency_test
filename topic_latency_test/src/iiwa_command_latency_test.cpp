@@ -10,7 +10,7 @@
 #include <iiwa_msgs/CartesianPose.h>
 
 int observation_count = 0;
-int observation_goal = 200;
+int observation_goal = 1000;
 
 float vel_lim = 100.0; // mm/s
 geometry_msgs::TwistStamped msg;

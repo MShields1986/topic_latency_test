@@ -10,7 +10,7 @@
 
 
 int observation_count = 0;
-int observation_goal = 200;
+int observation_goal = 1000;
 
 float vel_lim = 0.1;
 
