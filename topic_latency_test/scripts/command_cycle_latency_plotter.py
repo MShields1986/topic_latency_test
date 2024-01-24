@@ -110,7 +110,7 @@ files_wifi = ["kmr_command_wifi.txt",
               "iiwa_command_wifi.txt"]
 
 
-for file in files_wifi:
+for file in files_wired:
     data = pd.read_csv(f"{path}{file}", header=0, sep=", ", engine='python')
     
     df_length = len(data['Packet Sent'])
@@ -129,24 +129,24 @@ for file in files_wifi:
     # Plotting
     if 'iiwa' in file:
         histogram(data['Latency (ms)'],
-                  data['Latency (ms)'].min().round(2),
-                  data['Latency (ms)'].max().round(2),
+                  0, #data['Latency (ms)'].min().round(2),
+                  0.5, #data['Latency (ms)'].max().round(2),
                   0.001,
                   0.1)
         histogram(data['Transit dt (ms)'],
-                  data['Transit dt (ms)'].min().round(1),
-                  data['Transit dt (ms)'].max().round(1),
-                  0.005,
+                  data['Transit dt (ms)'].min().round(2),
+                  data['Transit dt (ms)'].max().round(2),
+                  0.001,
                   0.1)
     else:
         histogram(data['Latency (ms)'],
-                  data['Latency (ms)'].min().round(2),
-                  data['Latency (ms)'].max().round(2),
+                  0, #data['Latency (ms)'].min().round(2),
+                  0.1, #data['Latency (ms)'].max().round(2),
                   0.001,
                   0.01)
         histogram(data['Transit dt (ms)'],
-                  data['Transit dt (ms)'].min().round(1),
-                  data['Transit dt (ms)'].max().round(1),
+                  data['Transit dt (ms)'].min().round(2),
+                  data['Transit dt (ms)'].max().round(2),
                   0.001,
                   0.05)
 
