@@ -23,23 +23,38 @@ ros::Duration dt;
 // ofstream LogFile(path + "/data/scan_front.txt");
 // ofstream LogFile(path + "/data/scan_rear.txt");
 // ofstream LogFile(path + "/data/odom.txt");
-ofstream LogFile(path + "/data/iiwa_cartesian_pose.txt");
+// ofstream LogFile(path + "/data/iiwa_cartesian_pose.txt");
+
+// ofstream LogFile(path + "/data/test_one_260516/scan_internal.txt");
+ofstream LogFile(path + "/data/test_one_260516/scan_front.txt");
+// ofstream LogFile(path + "/data/test_one_260516/scan_rear.txt");
+// ofstream LogFile(path + "/data/test_one_260516/odom.txt");
+// ofstream LogFile(path + "/data/test_one_260516/iiwa_cartesian_pose.txt");
 
 
-// void topicCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
+void topicCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 // void topicCallback(const nav_msgs::Odometry::ConstPtr& msg)
-void topicCallback(const iiwa_msgs::CartesianPose::ConstPtr& msg)
+// void topicCallback(const iiwa_msgs::CartesianPose::ConstPtr& msg)
 {
   now = ros::Time::now();
-  // then = msg->header.stamp;
-  then = msg->poseStamped.header.stamp;
+  then = msg->header.stamp;
+  // then = msg->poseStamped.header.stamp;
   dt = now - then;
 
-  ROS_INFO_STREAM("Latency (sec): " << dt.toSec());
+  // ROS_INFO_STREAM("Latency (sec): " << dt.toSec());
 
   thens.push_back(then);
   nows.push_back(now);
   dts.push_back(dt);
+}
+
+
+const double TEST_DURATION_SEC = 300.0;
+
+void shutdownCallback(const ros::WallTimerEvent&)
+{
+  ROS_INFO_STREAM("300 s elapsed — shutting down.");
+  ros::shutdown();
 }
 
 
@@ -54,19 +69,19 @@ int main(int argc, char **argv)
   // ros::Rate rate(10);
 
   // ros::Subscriber sub = nh.subscribe("/scan", 10, topicCallback);
-  // ros::Subscriber sub = nh.subscribe("/scan_front", 10, topicCallback);
+  ros::Subscriber sub = nh.subscribe("/scan_front", 10, topicCallback);
   // ros::Subscriber sub = nh.subscribe("/scan_rear", 10, topicCallback);
   // ros::Subscriber sub = nh.subscribe("/odom", 10, topicCallback);
-  ros::Subscriber sub = nh.subscribe("/iiwa/state/CartesianPose", 10, topicCallback);
+  // ros::Subscriber sub = nh.subscribe("/iiwa/state/CartesianPose", 10, topicCallback);
+
+  ros::WallTimer shutdown_timer = nh.createWallTimer(
+    ros::WallDuration(TEST_DURATION_SEC), shutdownCallback, true);
+
+  ROS_INFO_STREAM("Topic latency monitor running (will stop after "
+    << TEST_DURATION_SEC << " s)...");
 
   while (ros::ok())
   {
-    ROS_INFO_STREAM("Topic latency monitor running...");
-    // ROS_INFO_THROTTLE(10, "Main Loop Latency (sec): " << std::to_string(dts.back().toSec()));
-    // ROS_INFO_STREAM("Main Loop Latency (sec): " << dts.back());
-    // ros::spinOnce();
-    // rate.sleep();
-
     // This is an order of magnitude faster to just do this rather than using ros::Rate as above
     ros::spin();
   }

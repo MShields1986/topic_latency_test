@@ -103,52 +103,46 @@ package_path = rospkg.RosPack().get_path('topic_latency_test')
 
 path = f"{package_path}/data/"
 
-files_wired = ["kmr_command_wired.txt",
-               "iiwa_command_wired.txt"]
+# Data sub-directories and files (new format: Packet Sent, Robot Stamp, Callback Time,
+# Latency Robot (sec), Latency Callback (sec))
+datasets = [
+    ("kmr_command_260515/kmr_command_wired.txt",  "kmr_command_wired"),
+    ("kmr_command_260515/kmr_command_wifi.txt",   "kmr_command_wifi"),
+    ("iiwa_command_260515/iiwa_command_wired.txt", "iiwa_command_wired"),
+    ("iiwa_command_260515/iiwa_command_wifi.txt",  "iiwa_command_wifi"),
+]
 
-files_wifi = ["kmr_command_wifi.txt",
-              "iiwa_command_wifi.txt"]
+
+def cmd_histogram(data_ms, label, xmin, xmax, binsize, xtick):
+    plt.figure(figsize=(figw, figh))
+    plt.grid(True, which="both", alpha=0.3)
+    plt.xticks(np.arange(xmin, xmax + xtick, step=xtick))
+
+    plt.hist(data_ms, bins=np.arange(xmin, xmax + binsize, step=binsize),
+             alpha=alpha, color="red")
+
+    plt.suptitle(f"{label} - Command-Observe Latency Histogram")
+    plt.title(
+        f"1σ = {data_ms.std():.2f} ms"
+        f" | mean = {data_ms.mean():.2f} ms"
+        f" | median = {data_ms.median():.2f} ms"
+        f" | n = {len(data_ms)}"
+    )
+    plt.xlabel("Command-Observe Loop Latency (ms)")
+    plt.ylabel("Observations")
+    plt.xlim((xmin, xmax))
+
+    plt.savefig(path + label + " - Latency_Histogram.png", dpi=dpi, bbox_inches='tight')
+    plt.close()
 
 
-for file in files_wired:
-    data = pd.read_csv(f"{path}{file}", header=0, sep=", ", engine='python')
-    
-    df_length = len(data['Packet Sent'])
-    
-    data['Latency (ms)'] = data['Latency (sec)'] * 1000
-    
-    data['Packet Sent dt (sec)'] = data['Packet Sent'][1:df_length].reset_index(drop=True) - data['Packet Sent'][0:df_length-1]
-    data['Packet Sent dt (sec)'] = data['Packet Sent dt (sec)'].shift(1)
-    
-    data['Action Observed dt (sec)'] = data['Action Observed'][1:df_length].reset_index(drop=True) - data['Action Observed'][0:df_length-1]
-    data['Action Observed dt (sec)'] = data['Action Observed dt (sec)'].shift(1)
-    
-    data['Transit dt (sec)'] = data['Packet Sent dt (sec)'] - data['Action Observed dt (sec)']
-    data['Transit dt (ms)'] = data['Transit dt (sec)'] * 1000
+for filepath, label in datasets:
+    data = pd.read_csv(f"{path}{filepath}", header=0, sep=", ", engine='python')
 
-    # Plotting
-    if 'iiwa' in file:
-        histogram(data['Latency (ms)'],
-                  0, #data['Latency (ms)'].min().round(2),
-                  0.5, #data['Latency (ms)'].max().round(2),
-                  0.001,
-                  0.1)
-        histogram(data['Transit dt (ms)'],
-                  data['Transit dt (ms)'].min().round(2),
-                  data['Transit dt (ms)'].max().round(2),
-                  0.001,
-                  0.1)
-    else:
-        histogram(data['Latency (ms)'],
-                  0, #data['Latency (ms)'].min().round(2),
-                  0.1, #data['Latency (ms)'].max().round(2),
-                  0.001,
-                  0.01)
-        histogram(data['Transit dt (ms)'],
-                  data['Transit dt (ms)'].min().round(2),
-                  data['Transit dt (ms)'].max().round(2),
-                  0.001,
-                  0.05)
+    # Use Latency Callback (wall-clock end-to-end) converted to ms
+    lat_ms = data['Latency Callback (sec)'] * 1000
 
-    scatter(data['Packet Sent'], data['Latency (ms)'])
-    scatter(data['Packet Sent'], data['Transit dt (ms)'])
+    # KMR distribution is ~5x tighter than iiwa; 10ms bins avoid the comb pattern
+    # that appears at 5ms resolution due to callback timing quantisation
+    binsize = 10 if 'kmr' in label else 5
+    cmd_histogram(lat_ms, label, xmin=0, xmax=650, binsize=binsize, xtick=50)
